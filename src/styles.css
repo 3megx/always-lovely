@@ -704,3 +704,41 @@ html.theme-transition-reverse::view-transition-new(root) {
     display: none !important;
   }
 }
+
+/* ---------------------------------------------------------------
+ * Accessibility baseline
+ * --------------------------------------------------------------- */
+@layer base {
+  /* Visible keyboard focus for every interactive element that does not
+     already define its own focus-visible treatment. */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* Skip link: hidden until focused by keyboard users. */
+@utility skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -100%;
+  z-index: 200;
+  border-radius: var(--radius-lg);
+  background: var(--accent);
+  color: var(--accent-foreground);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: top 0.2s ease;
+  &:focus-visible {
+    top: 0.75rem;
+  }
+}
