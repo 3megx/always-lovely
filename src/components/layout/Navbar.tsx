@@ -182,6 +182,8 @@ export function Navbar() {
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={tr("common.menu")}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
             className="grid size-9 place-items-center rounded-2xl bg-foreground/10 border border-border text-foreground md:hidden"
           >
             {open ? <X className="size-4" /> : <Menu className="size-4" />}
@@ -191,7 +193,7 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       {open && (
-        <div className="pointer-events-auto absolute top-full inset-x-0 mx-auto mt-2 flex w-[calc(100%-1.5rem)] max-w-md flex-col gap-1 rounded-2xl bg-card text-card-foreground p-4 md:hidden border border-border shadow-2xl">
+        <div id="mobile-nav" className="pointer-events-auto absolute top-full inset-x-0 mx-auto mt-2 flex w-[calc(100%-1.5rem)] max-w-md flex-col gap-1 rounded-2xl bg-card text-card-foreground p-4 md:hidden border border-border shadow-2xl">
           {navLinks.map((l) => (
             <Link
               key={l.key}
