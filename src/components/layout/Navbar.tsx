@@ -109,7 +109,7 @@ export function Navbar() {
               onMouseEnter={() => prefetchRouteLottie(l.to)}
               onFocus={() => prefetchRouteLottie(l.to)}
               onTouchStart={() => prefetchRouteLottie(l.to)}
-              className="font-sans text-[11px] font-extrabold tracking-[0.25em] text-foreground transition-opacity hover:opacity-75 uppercase"
+              className="-my-2 py-2 font-sans text-[11px] font-extrabold tracking-[0.25em] text-foreground transition-opacity hover:opacity-75 uppercase"
             >
               {tr(l.key)}
             </Link>
