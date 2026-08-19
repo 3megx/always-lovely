@@ -7,7 +7,7 @@ export function Hero() {
   const { tr, dir } = useI18n();
 
   return (
-    <section className="relative overflow-hidden bg-background pb-16 pt-32 sm:pt-36 md:pt-40 text-foreground select-none">
+    <section className="relative overflow-hidden bg-background pb-16 pt-32 sm:pt-36 md:pt-40 text-foreground">
       <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 lg:grid-cols-2">
         {/* Left Column Text & Action */}
         <div className="relative z-10 text-center lg:text-start">

@@ -86,7 +86,7 @@ export function ProjectGridSkeleton({
 
 export function ProjectDetailSkeleton() {
   return (
-    <div className="flex min-h-screen flex-col bg-background" aria-hidden>
+    <div className="flex min-h-dvh flex-col bg-background" aria-hidden>
       <div className="pt-20">
         <div className="skeleton-shimmer h-96 md:h-[500px]" />
         <div className="mx-auto max-w-5xl space-y-6 px-5 py-12">
@@ -111,7 +111,7 @@ export function ProjectDetailSkeleton() {
 
 export function PageSkeleton() {
   return (
-    <div className="flex min-h-screen flex-col bg-background" aria-hidden>
+    <div className="flex min-h-dvh flex-col bg-background" aria-hidden>
       <div className="mx-auto w-full max-w-6xl space-y-6 px-5 pt-32">
         <Bar className="h-4 w-28" />
         <Bar className="h-10 w-2/3" />
