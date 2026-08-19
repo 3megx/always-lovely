@@ -22,7 +22,7 @@ export function CredentialsCarousel() {
   return (
     <section
       id="awards"
-      className="w-full [content-visibility:auto] [contain-intrinsic-size:900px] bg-background px-4 py-14 text-foreground select-none sm:px-8 sm:py-20 md:px-12 lg:py-24"
+      className="w-full [content-visibility:auto] [contain-intrinsic-size:900px] bg-background px-4 py-14 text-foreground sm:px-8 sm:py-20 md:px-12 lg:py-24"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
