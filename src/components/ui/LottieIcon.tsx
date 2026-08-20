@@ -29,6 +29,7 @@ export function LottieIcon({
   playOnce = false,
   rootMargin = "0px",
   eager = false,
+  activateOn = "visible",
 }: {
   /** URL of the animation .lottie/JSON, e.g. `import url from "@/assets/x.lottie?url"` */
   src: string;
@@ -43,6 +44,12 @@ export function LottieIcon({
   rootMargin?: string;
   /** Skip the viewport gate (use for above-the-fold / hover-triggered icons). */
   eager?: boolean;
+  /**
+   * `"visible"` loads the runtime when the element scrolls into view.
+   * `"interaction"` keeps the static poster on first visit and only downloads
+   * the ~1.2 MB WASM runtime when the user hovers, taps or focuses it.
+   */
+  activateOn?: "visible" | "interaction";
 }) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<DotLottie | null>(null);
@@ -90,10 +97,17 @@ export function LottieIcon({
 
     if (eager) start();
 
+    const onIntent = () => start();
+    if (activateOn === "interaction") {
+      host.addEventListener("pointerenter", onIntent, { once: true });
+      host.addEventListener("pointerdown", onIntent, { once: true });
+      host.addEventListener("focusin", onIntent, { once: true });
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries.some((e) => e.isIntersecting);
-        if (visible) start();
+        if (visible && activateOn === "visible") start();
         const p = playerRef.current;
         if (!p) return;
         if (visible) {
@@ -120,9 +134,12 @@ export function LottieIcon({
       cancelled = true;
       if (idleHandle) window.clearTimeout(idleHandle);
       io.disconnect();
+      host.removeEventListener("pointerenter", onIntent);
+      host.removeEventListener("pointerdown", onIntent);
+      host.removeEventListener("focusin", onIntent);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [src, playOnce, rootMargin, eager]);
+  }, [src, playOnce, rootMargin, eager, activateOn]);
 
   return (
     <div ref={hostRef} className={className} aria-hidden="true">
