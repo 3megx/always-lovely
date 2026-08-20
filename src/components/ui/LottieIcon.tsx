@@ -134,9 +134,12 @@ export function LottieIcon({
       cancelled = true;
       if (idleHandle) window.clearTimeout(idleHandle);
       io.disconnect();
+      host.removeEventListener("pointerenter", onIntent);
+      host.removeEventListener("pointerdown", onIntent);
+      host.removeEventListener("focusin", onIntent);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [src, playOnce, rootMargin, eager]);
+  }, [src, playOnce, rootMargin, eager, activateOn]);
 
   return (
     <div ref={hostRef} className={className} aria-hidden="true">
