@@ -29,6 +29,7 @@ export function LottieIcon({
   playOnce = false,
   rootMargin = "0px",
   eager = false,
+  activateOn = "visible",
 }: {
   /** URL of the animation .lottie/JSON, e.g. `import url from "@/assets/x.lottie?url"` */
   src: string;
@@ -43,6 +44,12 @@ export function LottieIcon({
   rootMargin?: string;
   /** Skip the viewport gate (use for above-the-fold / hover-triggered icons). */
   eager?: boolean;
+  /**
+   * `"visible"` loads the runtime when the element scrolls into view.
+   * `"interaction"` keeps the static poster on first visit and only downloads
+   * the ~1.2 MB WASM runtime when the user hovers, taps or focuses it.
+   */
+  activateOn?: "visible" | "interaction";
 }) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<DotLottie | null>(null);
