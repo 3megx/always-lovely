@@ -97,10 +97,17 @@ export function LottieIcon({
 
     if (eager) start();
 
+    const onIntent = () => start();
+    if (activateOn === "interaction") {
+      host.addEventListener("pointerenter", onIntent, { once: true });
+      host.addEventListener("pointerdown", onIntent, { once: true });
+      host.addEventListener("focusin", onIntent, { once: true });
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries.some((e) => e.isIntersecting);
-        if (visible) start();
+        if (visible && activateOn === "visible") start();
         const p = playerRef.current;
         if (!p) return;
         if (visible) {
