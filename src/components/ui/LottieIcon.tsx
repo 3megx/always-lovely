@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { DotLottie } from "@lottiefiles/dotlottie-react";
 import {
+  canLoadLottiePlayer,
   getCachedLottie,
   loadLottieData,
   loadLottiePlayer,
@@ -26,7 +27,7 @@ export function LottieIcon({
   fallback = null,
   speed = 1,
   playOnce = false,
-  rootMargin = "300px",
+  rootMargin = "0px",
   eager = false,
 }: {
   /** URL of the animation .lottie/JSON, e.g. `import url from "@/assets/x.lottie?url"` */
@@ -50,9 +51,7 @@ export function LottieIcon({
   const [Player, setPlayer] = useState<
     typeof import("@lottiefiles/dotlottie-react").DotLottieReact | null
   >(null);
-  const [data, setData] = useState<ArrayBuffer | null>(
-    () => getCachedLottie(src) ?? null,
-  );
+  const [data, setData] = useState<ArrayBuffer | null>(() => getCachedLottie(src) ?? null);
 
   useEffect(() => {
     setData(getCachedLottie(src) ?? null);
@@ -61,22 +60,32 @@ export function LottieIcon({
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!canLoadLottiePlayer()) return;
 
     let cancelled = false;
+    let idleHandle = 0;
 
     const start = () => {
       if (startedRef.current) return;
       startedRef.current = true;
-      void Promise.all([loadLottiePlayer(), loadLottieData(src)])
-        .then(([lib, buf]) => {
-          if (cancelled) return;
-          setPlayer(() => lib.DotLottieReact);
-          setData(buf);
-        })
-        .catch(() => {
-          startedRef.current = false;
-        });
+      // Defer the ~1.2 MB runtime to idle time so it never competes with the
+      // page's own critical resources.
+      const run = () =>
+        void Promise.all([loadLottiePlayer(), loadLottieData(src)])
+          .then(([lib, buf]) => {
+            if (cancelled) return;
+            setPlayer(() => lib.DotLottieReact);
+            setData(buf);
+          })
+          .catch(() => {
+            startedRef.current = false;
+          });
+      const idle = (
+        window as unknown as {
+          requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+        }
+      ).requestIdleCallback;
+      idleHandle = idle ? idle(run, { timeout: 2000 }) : window.setTimeout(run, 200);
     };
 
     if (eager) start();
@@ -102,12 +111,14 @@ export function LottieIcon({
     const onVisibility = () => {
       const p = playerRef.current;
       if (!p) return;
-      document.hidden ? p.pause() : p.play();
+      if (document.hidden) p.pause();
+      else p.play();
     };
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       cancelled = true;
+      if (idleHandle) window.clearTimeout(idleHandle);
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
